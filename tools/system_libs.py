@@ -17,7 +17,7 @@ import tarfile
 import zipfile
 from glob import iglob
 
-from . import shared, building, ports
+from tools import shared, building, ports
 from tools.shared import mangle_c_symbol_name, demangle_c_symbol_name
 
 stdout = None

@@ -29,6 +29,8 @@ if sys.version_info[0] == 3 and sys.version_info < (3, 5):
   print('emscripten requires at least python 3.5 (or python 2.7.12 or above)', file=sys.stderr)
   sys.exit(1)
 
+from .settings_txt import settings_txt
+from .settings_internal_txt import settings_internal_txt
 from .toolchain_profiler import ToolchainProfiler
 from .tempfiles import try_delete
 from . import cache, tempfiles, colored_logger
@@ -523,9 +525,7 @@ def check_node_version():
 
 def set_version_globals():
   global EMSCRIPTEN_VERSION, EMSCRIPTEN_VERSION_MAJOR, EMSCRIPTEN_VERSION_MINOR, EMSCRIPTEN_VERSION_TINY
-  filename = path_from_root('emscripten-version.txt')
-  with open(filename) as f:
-    EMSCRIPTEN_VERSION = f.read().strip().replace('"', '')
+  EMSCRIPTEN_VERSION = "1.39.20"
   parts = [int(x) for x in EMSCRIPTEN_VERSION.split('.')]
   EMSCRIPTEN_VERSION_MAJOR, EMSCRIPTEN_VERSION_MINOR, EMSCRIPTEN_VERSION_TINY = parts
 
@@ -913,13 +913,13 @@ class SettingsManager(object):
       cls.attrs = {}
 
       # Load the JS defaults into python.
-      settings = open(path_from_root('src', 'settings.js')).read().replace('//', '#')
+      settings = settings_txt.replace('//', '#')
       settings = re.sub(r'var ([\w\d]+)', r'attrs["\1"]', settings)
       # Variable TARGET_NOT_SUPPORTED is referenced by value settings.js (also beyond declaring it),
       # so must pass it there explicitly.
       exec(settings, {'attrs': cls.attrs})
 
-      settings = open(path_from_root('src', 'settings_internal.js')).read().replace('//', '#')
+      settings = settings_internal_txt.replace('//', '#')
       settings = re.sub(r'var ([\w\d]+)', r'attrs["\1"]', settings)
       internal_attrs = {}
       exec(settings, {'attrs': internal_attrs})
