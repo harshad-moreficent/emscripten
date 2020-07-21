@@ -32,3 +32,4 @@ third_party/lzma.js/lzma-native.exe
 .DS_Store
 
 .venv
+bazel-*
